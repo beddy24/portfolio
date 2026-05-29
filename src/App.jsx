@@ -1,13 +1,21 @@
 import React from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
+import Projects from './components/Projects'
+import About from './components/About'
+import Timeline from './components/Timeline'
+import Contact from './components/Contact'
 
 function App() {
   return (
-    <div className='bg-grey-900'>
+    <>
       <Header />
       <Hero />
-    </div>
+      <Projects />
+      <About />
+      <Timeline />
+      <Contact />
+    </>
   )
 }
 
