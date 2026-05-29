@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>dine@beddi:~ — Développeur Full-Stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#0b0d11;
+  --bg-2:#0f1217;
+  --panel:#13171e;
+  --line:#222833;
+  --line-2:#2c3441;
+  --txt:#c6ccd6;
+  --txt-dim:#7a8493;
+  --txt-faint:#4a5462;
+  --green:oklch(0.82 0.16 152);
+  --cyan:oklch(0.82 0.11 210);
+  --amber:oklch(0.84 0.13 78);
+  --magenta:oklch(0.78 0.14 330);
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--mono);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(120% 80% at 50% -10%,oklch(0.82 0.16 152 / .05),transparent 60%);}
+::selection{background:var(--green);color:var(--bg)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:0 28px}
+.grn{color:var(--green)}.cyn{color:var(--cyan)}.amb{color:var(--amber)}.mag{color:var(--magenta)}.dim{color:var(--txt-dim)}.faint{color:var(--txt-faint)}
+
+/* topbar */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar .inner{max-width:980px;margin:0 auto;padding:0 28px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.tb-left{display:flex;align-items:center;gap:14px}
+.lights{display:flex;gap:7px}
+.lights i{width:11px;height:11px;border-radius:50%;display:block}
+.lights i:nth-child(1){background:#ff5f57}.lights i:nth-child(2){background:#febc2e}.lights i:nth-child(3){background:#28c840}
+.tb-path{color:var(--txt-dim);font-size:12.5px}
+.tb-nav{display:flex;gap:22px;font-size:12.5px}
+.tb-nav a{color:var(--txt-dim);transition:color .2s}
+.tb-nav a:hover{color:var(--green)}
+.tb-nav a::before{content:"./";color:var(--txt-faint)}
+
+/* hero terminal */
+.hero{padding:108px 0 70px}
+.ascii{color:var(--green);font-size:clamp(7px,1.7vw,14px);line-height:1.15;white-space:pre;font-weight:500;text-shadow:0 0 18px oklch(0.82 0.16 152 / .25);margin-bottom:8px}
+.tagline{color:var(--txt-dim);margin:18px 0 30px;font-size:14px}
+.tagline b{color:var(--txt);font-weight:600}
+.term{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 24px 60px -30px #000}
+.term-head{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
+.term-head .lights i{width:10px;height:10px}
+.term-head span{color:var(--txt-faint);font-size:12px;margin-left:6px}
+.term-body{padding:18px 18px 16px;min-height:230px}
+.ln{white-space:pre-wrap;word-break:break-word}
+.prompt-u{color:var(--green)}.prompt-h{color:var(--cyan)}
+.cmd-line{display:flex;gap:8px;align-items:baseline}
+.cmd-line .ps{color:var(--green);white-space:nowrap}
+.cmd-line .ps b{color:var(--cyan);font-weight:400}
+#cmdInput{background:transparent;border:none;outline:none;color:var(--txt);font-family:var(--mono);font-size:14px;flex:1;caret-color:var(--green)}
+.hint{color:var(--txt-faint);font-size:12px;margin-top:14px}
+.hint b{color:var(--amber);font-weight:500}
+.blink{animation:bl 1.05s steps(2) infinite}@keyframes bl{0%,50%{opacity:1}51%,100%{opacity:0}}
+
+/* sections as files */
+section{padding:64px 0;border-top:1px solid var(--line)}
+.sec-tag{display:flex;align-items:center;gap:12px;color:var(--txt-faint);font-size:12.5px;margin-bottom:34px}
+.sec-tag .hash{color:var(--green)}
+.sec-tag .grow{flex:1;height:1px;background:var(--line)}
+.sec-title{color:var(--txt);font-size:22px;font-weight:600;font-family:var(--sans);letter-spacing:-.01em}
+
+/* projects */
+.proj{border:1px solid var(--line);border-radius:10px;background:var(--bg-2);margin-bottom:18px;overflow:hidden;transition:border-color .25s,transform .25s}
+.proj:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.proj-head{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;border-bottom:1px solid transparent;transition:border-color .25s}
+.proj.open .proj-head{border-color:var(--line)}
+.chev{color:var(--green);transition:transform .25s;font-size:12px}
+.proj.open .chev{transform:rotate(90deg)}
+.proj-name{color:var(--txt);font-weight:600;font-size:15px}
+.proj-meta{margin-left:auto;color:var(--txt-faint);font-size:12px}
+.proj-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.proj.open .proj-body{max-height:640px}
+.proj-inner{padding:18px;display:grid;grid-template-columns:1fr 300px;gap:22px}
+.proj-role{color:var(--cyan);font-size:13px;margin-bottom:12px}
+.proj-desc{color:var(--txt-dim);font-size:13.5px;line-height:1.75;margin-bottom:16px}
+.kv{display:flex;gap:8px;font-size:13px;margin-bottom:5px}
+.kv .k{color:var(--green);min-width:78px}
+.kv .v{color:var(--txt)}
+.stack{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chip{font-size:11px;color:var(--cyan);border:1px solid var(--line-2);border-radius:5px;padding:3px 8px;background:oklch(0.82 0.11 210 / .06)}
+.proj image-slot{width:100%;height:100%;min-height:170px;border:1px solid var(--line);border-radius:6px;display:block}
+
+/* about / skills */
+.about-grid{display:grid;grid-template-columns:200px 1fr;gap:34px;align-items:start}
+.about image-slot{width:200px;height:200px;border:1px solid var(--line);border-radius:10px;display:block}
+.json{font-size:13.5px;line-height:1.85}
+.json .key{color:var(--cyan)}.json .str{color:var(--green)}.json .pun{color:var(--txt-faint)}
+.about-prose{color:var(--txt-dim);font-family:var(--sans);font-size:15px;line-height:1.7;margin-top:18px;max-width:62ch}
+.skills{display:grid;grid-template-columns:repeat(2,1fr);gap:0 40px;margin-top:30px}
+.srow{display:grid;grid-template-columns:100px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+.srow .k{color:var(--green)}.srow .v{color:var(--txt)}
+
+/* timeline */
+.log{border-left:2px solid var(--line);margin-left:6px}
+.log-item{position:relative;padding:0 0 30px 28px}
+.log-item::before{content:"";position:absolute;left:-7px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--green)}
+.log-date{color:var(--amber);font-size:12px}
+.log-role{color:var(--txt);font-weight:600;font-size:15px;margin:3px 0;font-family:var(--sans)}
+.log-org{color:var(--cyan);font-size:13px;margin-bottom:8px}
+.log-desc{color:var(--txt-dim);font-size:13.5px;line-height:1.7;max-width:64ch}
+
+/* contact */
+.contact-box{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:30px}
+.contact-box .l{color:var(--txt-faint);font-size:13px;margin-bottom:14px}
+.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.citem{display:flex;gap:10px;align-items:center;font-size:14px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;transition:.2s}
+.citem:hover{border-color:var(--green);background:oklch(0.82 0.16 152 / .05)}
+.citem .k{color:var(--green)}
+footer{padding:34px 0;border-top:1px solid var(--line);color:var(--txt-faint);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+.reveal{opacity:0;transform:translateY(16px);transition:.6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:760px){
+  .tb-nav{display:none}
+  .proj-inner{grid-template-columns:1fr}
+  .proj image-slot{min-height:150px;order:-1}
+  .about-grid{grid-template-columns:1fr}
+  .about image-slot{width:100%;height:220px}
+  .skills,.cgrid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="inner">
+    <div class="tb-left"><span class="lights"><i></i><i></i><i></i></span><span class="tb-path">dine@beddi: ~/portfolio</span></div>
+    <nav class="tb-nav">
+      <a href="#projects">projects</a><a href="#about">about</a><a href="#parcours">log</a><a href="#contact">contact</a>
+    </nav>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="wrap">
+<pre class="ascii"> ____  _              ____           _     _ _ 
+|  _ \(_)_ __   ___  | __ )  ___  __| | __| (_)
+| | | | | '_ \ / _ \ |  _ \ / _ \/ _` |/ _` | |
+| |_| | | | | |  __/ | |_) |  __/ (_| | (_| | |
+|____/|_|_| |_|\___| |____/ \___|\__,_|\__,_|_|</pre>
+    <p class="tagline"><b>Développeur Full-Stack</b> · Java 21+ · Spring Boot · Angular · React <span class="dim">— Nantes, FR</span></p>
+
+    <div class="term">
+      <div class="term-head"><span class="lights"><i></i><i></i><i></i></span><span>— zsh — dine@beddi —</span></div>
+      <div class="term-body" id="termBody" onclick="document.getElementById('cmdInput').focus()">
+        <div class="ln"><span class="grn">dine@beddi</span><span class="faint">:</span><span class="cyn">~</span><span class="faint">$</span> whoami</div>
+        <div class="ln dim">Étudiant ingénieur (M1, Polytech Nantes), spécialisé full-stack avec une expérience concrète en milieu bancaire. En recherche d'<span class="amb">alternance 2026</span>.</div>
+        <div class="ln" style="margin-top:8px"><span class="grn">dine@beddi</span><span class="faint">:</span><span class="cyn">~</span><span class="faint">$</span> cat stack.txt</div>
+        <div class="ln"><span class="cyn">backend</span> <span class="faint">→</span> Java · Spring Boot · API REST · JPA/Hibernate</div>
+        <div class="ln"><span class="cyn">frontend</span> <span class="faint">→</span> Angular · React · TypeScript · Flutter</div>
+        <div class="ln"><span class="cyn">devops</span> <span class="faint">→</span> Git · GitLab · CI/CD · Docker · tests</div>
+        <div id="histOut"></div>
+        <div class="cmd-line" style="margin-top:8px">
+          <span class="ps"><b>dine@beddi</b>:~$</span>
+          <input id="cmdInput" autocomplete="off" spellcheck="false" autofocus />
+        </div>
+      </div>
+    </div>
+    <p class="hint">Tape une commande — essaie <b>help</b>, <b>projects</b>, <b>skills</b>, <b>contact</b> ou <b>sudo hire</b>.</p>
+  </div>
+</div>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-tag reveal"><span class="hash">$</span><span>ls&nbsp;~/projects</span><span class="grow"></span><span>03</span></div>
+    <h2 class="sec-title reveal" style="margin-bottom:26px">Travaux sélectionnés</h2>
+
+    <div class="proj open reveal">
+      <div class="proj-head"><span class="chev">▶</span><span class="proj-name">banque-mobile</span><span class="dim" style="font-size:13px">/ application cartes prépayées</span><span class="proj-meta">2025 · stage</span></div>
+      <div class="proj-body"><div class="proj-inner">
+        <div>
+          <div class="proj-role">// Développeur Backend Full-Stack — Banque Nationale de Mauritanie</div>
+          <p class="proj-desc">Architecture backend complète pour une application mobile de gestion de cartes prépayées. API REST sécurisées pour les transactions bancaires, intégration base Oracle via JPA/Hibernate, tests unitaires &amp; d'intégration validés sous Postman, collaboration avec l'équipe Flutter en Scrum.</p>
+          <div class="kv"><span class="k">role</span><span class="v">Backend / Full-Stack</span></div>
+          <div class="kv"><span class="k">durée</span><span class="v">8 semaines · Nouakchott</span></div>
+          <div class="kv"><span class="k">résultat</span><span class="v">Appli performante, qualité de code bancaire</span></div>
+          <div class="stack"><span class="chip">Java</span><span class="chip">Spring Boot</span><span class="chip">API REST</span><span class="chip">Oracle</span><span class="chip">JPA/Hibernate</span><span class="chip">Flutter</span></div>
+        </div>
+        <image-slot id="tm-p1" placeholder="capture / archi"></image-slot>
+      </div></div>
+    </div>
+
+    <div class="proj reveal">
+      <div class="proj-head"><span class="chev">▶</span><span class="proj-name">mern-app</span><span class="dim" style="font-size:13px">/ web app + CI/CD</span><span class="proj-meta">2024</span></div>
+      <div class="proj-body"><div class="proj-inner">
+        <div>
+          <div class="proj-role">// Application Web full-stack avec pipeline automatisé</div>
+          <p class="proj-desc">Front React responsive avec gestion d'état avancée, backend API REST Node/Express et authentification JWT. Tests front (Jest) et back (Mocha/Chai), pipeline GitLab CI/CD complet : build, tests automatisés et déploiement.</p>
+          <div class="kv"><span class="k">role</span><span class="v">Full-Stack</span></div>
+          <div class="kv"><span class="k">tests</span><span class="v">Jest · Mocha/Chai</span></div>
+          <div class="kv"><span class="k">ci</span><span class="v">GitLab · build → test → deploy</span></div>
+          <div class="stack"><span class="chip">React</span><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">MongoDB</span><span class="chip">JWT</span><span class="chip">GitLab CI</span></div>
+        </div>
+        <image-slot id="tm-p2" placeholder="capture de l'app"></image-slot>
+      </div></div>
+    </div>
+
+    <div class="proj reveal">
+      <div class="proj-head"><span class="chev">▶</span><span class="proj-name">academic-projects</span><span class="dim" style="font-size:13px">/ Angular · Java · SQL · Python</span><span class="proj-meta">2023–24</span></div>
+      <div class="proj-body"><div class="proj-inner">
+        <div>
+          <div class="proj-role">// Projets académiques — Polytech Nantes</div>
+          <p class="proj-desc">Interfaces web modernes et composants réutilisables en Angular, algorithmes d'optimisation et structures de données complexes en Java, schémas et requêtes SQL avancées (MySQL/PostgreSQL), automatisation et analyse de données en Python.</p>
+          <div class="kv"><span class="k">focus</span><span class="v">Algorithmique · data · UI</span></div>
+          <div class="stack"><span class="chip">Angular</span><span class="chip">Java</span><span class="chip">PostgreSQL</span><span class="chip">Python</span><span class="chip">NumPy/Pandas</span></div>
+        </div>
+        <image-slot id="tm-p3" placeholder="capture / diagramme"></image-slot>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-tag reveal"><span class="hash">$</span><span>cat&nbsp;profile.json</span><span class="grow"></span><span>02</span></div>
+    <div class="about-grid">
+      <image-slot id="tm-portrait" class="reveal" placeholder="photo"></image-slot>
+      <div class="reveal">
+        <div class="json"><span class="pun">{</span><br />
+          &nbsp;&nbsp;<span class="key">"nom"</span><span class="pun">:</span> <span class="str">"Dine Beddi"</span><span class="pun">,</span><br />
+          &nbsp;&nbsp;<span class="key">"rôle"</span><span class="pun">:</span> <span class="str">"Développeur Full-Stack"</span><span class="pun">,</span><br />
+          &nbsp;&nbsp;<span class="key">"formation"</span><span class="pun">:</span> <span class="str">"M1 Ingénieur — Polytech Nantes"</span><span class="pun">,</span><br />
+          &nbsp;&nbsp;<span class="key">"localisation"</span><span class="pun">:</span> <span class="str">"Nantes, France"</span><span class="pun">,</span><br />
+          &nbsp;&nbsp;<span class="key">"langues"</span><span class="pun">:</span> <span class="str">["FR (C2)", "EN (TOEIC)", "AR", "ES"]</span><span class="pun">,</span><br />
+          &nbsp;&nbsp;<span class="key">"statut"</span><span class="pun">:</span> <span class="str">"recherche_alternance"</span><br />
+        <span class="pun">}</span></div>
+        <p class="about-prose">Autonomie, rigueur et curiosité technique. Pratique quotidienne des tests, du CI/CD et de l'Agile — j'aime livrer un code propre, testé et maintenable. Centres d'intérêt : hackathons, aviron, football, échecs.</p>
+        <div class="skills">
+          <div class="srow"><span class="k">backend</span><span class="v">Java · Spring Boot · Node · Express · REST</span></div>
+          <div class="srow"><span class="k">frontend</span><span class="v">React · Angular · TS · HTML/CSS · Flutter</span></div>
+          <div class="srow"><span class="k">data</span><span class="v">Oracle · PostgreSQL · MySQL · MongoDB</span></div>
+          <div class="srow"><span class="k">tests</span><span class="v">Unitaires · intégration · Postman · TDD</span></div>
+          <div class="srow"><span class="k">devops</span><span class="v">Git · GitLab · CI/CD · Docker · Maven</span></div>
+          <div class="srow"><span class="k">méthodes</span><span class="v">Agile/Scrum · API design · code review</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="parcours">
+  <div class="wrap">
+    <div class="sec-tag reveal"><span class="hash">$</span><span>git&nbsp;log&nbsp;--parcours</span><span class="grow"></span><span>01</span></div>
+    <div class="log">
+      <div class="log-item reveal">
+        <div class="log-date">juin–août 2025</div>
+        <div class="log-role">Stage Développeur Backend Full-Stack</div>
+        <div class="log-org">Banque Nationale de Mauritanie — Nouakchott</div>
+        <p class="log-desc">Application mobile bancaire (cartes prépayées) : backend Java/Spring Boot, API REST sécurisées, intégration Oracle, tests et suivi du déploiement en production.</p>
+      </div>
+      <div class="log-item reveal">
+        <div class="log-date">2023 — 2026</div>
+        <div class="log-role">Diplôme d'Ingénieur Informatique — M1</div>
+        <div class="log-org">Polytech Nantes — 4ᵉ année</div>
+        <p class="log-desc">Développement (Java, Spring, Angular, React, Node), qualité logicielle (tests, CI/CD, code review), méthodologies Agile/Scrum, projets collaboratifs Git/GitLab.</p>
+      </div>
+      <div class="log-item reveal">
+        <div class="log-date">2019 — 2020</div>
+        <div class="log-role">Baccalauréat Mathématiques — Mention Bien</div>
+        <div class="log-org">École Privée Menhel — Mauritanie</div>
+        <p class="log-desc">Bilingue français (C2), anglais (TOEIC), arabe natif, notions d'espagnol.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-tag reveal"><span class="hash">$</span><span>./contact.sh</span><span class="grow"></span><span>00</span></div>
+    <div class="contact-box reveal">
+      <div class="l"><span class="grn">➜</span> Disponible pour une alternance — discutons.</div>
+      <div class="cgrid">
+        <a class="citem" href="/cdn-cgi/l/email-protection#9cfef9f8f8e5ada5acaea5dcfbf1fdf5f0b2fff3f1"><span class="k">email</span> <span class="__cf_email__" data-cfemail="610304050518505851535821060c00080d4f020e0c">[email&#160;protected]</span></a>
+        <a class="citem" href="tel:+33679185479"><span class="k">tel</span> +33 6 79 18 54 79</a>
+        <span class="citem"><span class="k">loc</span> Nantes, France</span>
+        <span class="citem"><span class="k">status</span> <span class="grn">disponible · 2026</span></span>
+      </div>
+    </div>
+    <footer><span>© 2026 dine beddi</span><span>built with vim &amp; coffee ☕</span></footer>
+  </div>
+</section>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="image-slot.js"></script>
+<script>
+  // collapsible projects
+  document.querySelectorAll('.proj-head').forEach(h=>h.addEventListener('click',()=>h.closest('.proj').classList.toggle('open')));
+
+  // reveal
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // interactive terminal
+  const input=document.getElementById('cmdInput');
+  const out=document.getElementById('histOut');
+  const body=document.getElementById('termBody');
+  const cmds={
+    help:()=>`commandes: <span class="grn">whoami projects skills stack contact log clear sudo</span>`,
+    whoami:()=>`Dine Beddi — Développeur Full-Stack, M1 Polytech Nantes. En recherche d'<span class="amb">alternance 2026</span>.`,
+    projects:()=>`<span class="cyn">banque-mobile</span> (2025) · <span class="cyn">mern-app</span> (2024) · <span class="cyn">academic-projects</span> (2023–24) — <span class="dim">voir la section ci-dessous ↓</span>`,
+    skills:()=>`Java · Spring Boot · API REST · Angular · React · TypeScript · Node · SQL · Docker · CI/CD`,
+    stack:()=>`backend: Java/Spring · front: Angular/React · db: Oracle/Postgres/Mongo · ops: GitLab CI`,
+    contact:()=>`✉ <span class="grn">beddy19029@gmail.com</span> · ☎ +33 6 79 18 54 79 · 📍 Nantes`,
+    log:()=>`2025 stage BNM · 2023–26 M1 Polytech · 2019–20 Bac mention bien`,
+    sudo:(a)=>a==='hire'?`<span class="grn">[sudo] permission accordée ✓</span> — écrivez à beddy19029@gmail.com 🎉`:`usage: sudo hire`,
+    clear:()=>{out.innerHTML='';return null;}
+  };
+  function print(html){const d=document.createElement('div');d.className='ln';d.innerHTML=html;out.appendChild(d);}
+  function echo(c){const d=document.createElement('div');d.className='ln';d.innerHTML=`<span class="grn">dine@beddi</span><span class="faint">:</span><span class="cyn">~</span><span class="faint">$</span> ${c.replace(/</g,'&lt;')}`;out.appendChild(d);}
+  input.addEventListener('keydown',e=>{
+    if(e.key!=='Enter')return;
+    const raw=input.value.trim();input.value='';
+    if(!raw){echo('');return;}
+    echo(raw);
+    const [c,...rest]=raw.split(/\s+/);
+    const fn=cmds[c.toLowerCase()];
+    if(fn){const r=fn(rest.join(' ').toLowerCase());if(r!==null)print(r);}
+    else print(`<span class="mag">zsh: command not found: ${c.replace(/</g,'&lt;')}</span> — tape <span class="grn">help</span>`);
+    body.scrollTop=body.scrollHeight;
+    window.scrollTo({top:0,behavior:'instant'});
+  });
+</script>
+</body>
+</html>
